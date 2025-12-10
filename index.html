@@ -5,23 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gessraha Pharmacy</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap');
 body { font-family: 'Roboto', sans-serif; margin:0; padding:0; box-sizing:border-box; scroll-behavior: smooth; background-color:#f9fafb; }
 h1,h2,h3 { font-family: 'Poppins', sans-serif; }
-.product-card { transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease; cursor:pointer; border:1px solid transparent; }
-.product-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0,0,0,0.15); border-color:#e5e7eb; }
+.product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer; }
+.product-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
 .btn-hover { transition: all 0.3s ease; }
 .btn-hover:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-.service-icon { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:36px; transition: transform 0.3s ease; background: linear-gradient(135deg,#0ea5e9,#0284c7); color:white; }
+.service-icon { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:36px; transition: transform 0.3s ease; background: linear-gradient(135deg,#60a5fa,#3b82f6); color:white; margin: 0 auto; }
 .service-card:hover .service-icon { transform: scale(1.1); }
-@keyframes float {0%,100%{transform: translateY(0);}50%{transform: translateY(-15px);}}
-.animate-float { animation: float 4s ease-in-out infinite; }
-.offer-badge { position: absolute; top:12px; right:12px; font-weight:bold; padding:6px 12px; border-radius:8px; font-size:14px; background: linear-gradient(to right,#10b981,#06b6d4); color:white; box-shadow: 0 4px 6px rgba(0,0,0,0.2); animation: pulse 2s infinite; }
-@keyframes pulse {0%,100%{transform: scale(1);}50%{transform: scale(1.05);}}
-#toast { position: fixed; bottom: 30px; right: 30px; background: #0ea5e9; color: white; padding: 12px 20px; border-radius: 12px; opacity:0; transform: translateY(20px); transition: all 0.4s ease; z-index:1000; }
+#toast { position: fixed; bottom: 30px; right: 30px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 12px; opacity:0; transform: translateY(20px); transition: all 0.4s ease; z-index:1000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 #toast.show { opacity:1; transform: translateY(0); }
+.doctor-card { transition: box-shadow 0.3s ease; }
+.doctor-card:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
 </style>
 </head>
 <body class="h-full">
@@ -39,19 +36,21 @@ h1,h2,h3 { font-family: 'Poppins', sans-serif; }
 </div>
 <div class="hidden md:flex items-center space-x-8 font-medium text-gray-800">
 <a href="#hero" class="hover:underline">Home</a>
+<a href="#doctors" class="hover:underline">Doctors</a>
 <a href="#products" class="hover:underline">Products</a>
-<a href="#cart" class="hover:underline">Cart</a>
-<a href="#checkout" class="hover:underline">Checkout</a>
+<a href="#services" class="hover:underline">Services</a>
+<a href="#reviews" class="hover:underline">Reviews</a>
+<a href="#faq" class="hover:underline">FAQ</a>
 <a href="#footer" class="hover:underline">Contact</a>
 </div>
 <div class="flex items-center space-x-4">
-<div class="relative">
-<input id="searchInput" type="text" placeholder="Search..." class="border border-gray-300 rounded-full p-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 transition hidden md:block w-48">
-<i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+<div class="relative hidden md:block">
+<input id="searchInput" type="text" placeholder="Search..." class="border border-gray-300 rounded-full p-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-48">
+<svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
 </div>
 <button class="relative text-2xl hover:opacity-80 transition-opacity" onclick="toggleCart()">
 🛒
-<span id="cart-count" class="absolute top-0 right-0 w-5 h-5 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">0</span>
+<span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-green-500 text-white text-xs flex items-center justify-center hidden">0</span>
 </button>
 </div>
 </div>
@@ -61,192 +60,551 @@ h1,h2,h3 { font-family: 'Poppins', sans-serif; }
 <!-- Hero Section -->
 <section id="hero" class="relative py-24 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white overflow-hidden">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
-<div class="md:w-1/2 mb-10 md:mb-0 relative">
+<div class="md:w-1/2 mb-10 md:mb-0">
 <h2 class="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg">Your Health is Our Priority</h2>
 <p class="text-xl md:text-2xl mb-8 opacity-90 drop-shadow-md">Quality medicines and healthcare products delivered to your doorstep</p>
 <button onclick="scrollToProducts()" class="px-8 py-4 rounded-full font-bold text-lg shadow-xl btn-hover bg-white text-blue-600">Shop Now</button>
 </div>
-<div class="md:w-1/2 flex justify-center relative">
-<img src="images/large.png" class="w-80 md:w-96 rounded-3xl shadow-2xl animate-float" />
+<div class="md:w-1/2 flex justify-center">
+<img src="images/large.png" class="w-80 md:w-96 rounded-3xl shadow-2xl" alt="Pharmacy" />
+</div>
+</div>
+</section>
+
+<!-- Doctors Section -->
+<section id="doctors" class="py-16 px-4 bg-white">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-bold text-center mb-4">فريقنا من الأطباء</h2>
+<p class="text-center opacity-75 mb-12">أطباء متميزون من طنطا لخدمتكم</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Doctor 1 -->
+<div class="doctor-card bg-white rounded-3xl shadow-xl overflow-hidden">
+<img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop" class="w-full h-64 object-cover" alt="د. محمد أحمد الشافعي" />
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2">د. محمد أحمد الشافعي</h3>
+<p class="text-blue-600 font-semibold mb-2">استشاري الأمراض الباطنة</p>
+<p class="text-sm opacity-75 mb-2"><strong>5 سنة خبرة</strong></p>
+<p class="text-sm opacity-75 mb-3">📍 طنطا - شارع الجيش</p>
+<p class="text-sm opacity-75 leading-relaxed">متخصص في علاج أمراض السكري والضغط والقلب. خريج كلية الطب جامعة طنطا مع درجة الدكتوراه من جامعة القاهرة.</p>
+</div>
+</div>
+
+<!-- Doctor 2 -->
+<div class="doctor-card bg-white rounded-3xl shadow-xl overflow-hidden">
+<img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop" class="w-full h-64 object-cover" alt="د. سارة حسن المنياوي" />
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2">د. سارة حسن المنياوي</h3>
+<p class="text-blue-600 font-semibold mb-2">أخصائية الجلدية والتجميل</p>
+<p class="text-sm opacity-75 mb-2"><strong>8 سنين خبرة</strong></p>
+<p class="text-sm opacity-75 mb-3">📍 طنطا - شارع البحر</p>
+<p class="text-sm opacity-75 leading-relaxed">خبيرة في علاج مشاكل البشرة والشعر والتجميل بالليزر. عضو الجمعية المصرية للأمراض الجلدية.</p>
+</div>
+</div>
+
+<!-- Doctor 3 -->
+<div class="doctor-card bg-white rounded-3xl shadow-xl overflow-hidden">
+<img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop" class="w-full h-64 object-cover" alt="د. أحمد عبد الرحمن قاسم" />
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2">د. أحمد عبد الرحمن قاسم</h3>
+<p class="text-blue-600 font-semibold mb-2">استشاري الأطفال وحديثي الولادة</p>
+<p class="text-sm opacity-75 mb-2"><strong>10 سنين خبرة</strong></p>
+<p class="text-sm opacity-75 mb-3">📍 طنطا - ميدان المحطة</p>
+<p class="text-sm opacity-75 leading-relaxed">متخصص في رعاية الأطفال والتطعيمات ومتابعة النمو. حاصل على الدكتوراه من جامعة عين شمس.</p>
+</div>
+</div>
+
+<!-- Doctor 4 -->
+<div class="doctor-card bg-white rounded-3xl shadow-xl overflow-hidden">
+<img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop" class="w-full h-64 object-cover" alt="د. نهى محمود البسيوني" />
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2">د. نهى محمود البسيوني</h3>
+<p class="text-blue-600 font-semibold mb-2">استشارية النساء والتوليد</p>
+<p class="text-sm opacity-75 mb-2"><strong>14 سنين خبرة</strong></p>
+<p class="text-sm opacity-75 mb-3">📍 طنطا - شارع الجلاء</p>
+<p class="text-sm opacity-75 leading-relaxed">خبيرة في متابعة الحمل والولادة وجراحات النساء. عضو الجمعية المصرية لأمراض النساء والتوليد.</p>
+</div>
+</div>
+
+<!-- Doctor 5 -->
+<div class="doctor-card bg-white rounded-3xl shadow-xl overflow-hidden">
+<img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop" class="w-full h-64 object-cover" alt="د. ياسر عادل النجار" />
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2">د. ياسر عادل النجار</h3>
+<p class="text-blue-600 font-semibold mb-2">استشاري العظام والمفاصل</p>
+<p class="text-sm opacity-75 mb-2"><strong>6 سنين خبرة</strong></p>
+<p class="text-sm opacity-75 mb-3">📍 طنطا - شارع سعيد</p>
+<p class="text-sm opacity-75 leading-relaxed">متخصص في علاج آلام العظام والمفاصل وإصابات الملاعب. حاصل على الزمالة البريطانية في جراحة العظام.</p>
+</div>
+</div>
+
+<!-- Doctor 6 -->
+<div class="doctor-card bg-white rounded-3xl shadow-xl overflow-hidden">
+<img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop" class="w-full h-64 object-cover" alt="د. منى سمير الشرقاوي" />
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2">د. منى سمير الشرقاوي</h3>
+<p class="text-blue-600 font-semibold mb-2">أخصائية التغذية العلاجية</p>
+<p class="text-sm opacity-75 mb-2"><strong>10 سنين خبرة</strong></p>
+<p class="text-sm opacity-75 mb-3">📍 طنطا - شارع الزراعة</p>
+<p class="text-sm opacity-75 leading-relaxed">متخصصة في برامج التغذية الصحية وعلاج السمنة والنحافة. عضو الجمعية المصرية للتغذية الإكلينيكية.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Categories / Filters -->
+<section id="categories" class="py-12 px-4 bg-gray-50">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-3xl font-bold text-center mb-8">Browse by Category</h2>
+<div class="flex justify-center flex-wrap gap-6">
+<button class="category-btn px-6 py-3 rounded-full bg-blue-600 text-white font-semibold btn-hover shadow-lg scale-105" onclick="filterCategory('all')">All</button>
+<button class="category-btn px-6 py-3 rounded-full bg-blue-500 text-white font-semibold btn-hover" onclick="filterCategory('Skincare')">Skincare</button>
+<button class="category-btn px-6 py-3 rounded-full bg-blue-500 text-white font-semibold btn-hover" onclick="filterCategory('Medicines')">Medicines</button>
+<button class="category-btn px-6 py-3 rounded-full bg-blue-500 text-white font-semibold btn-hover" onclick="filterCategory('Supplements')">Supplements</button>
 </div>
 </div>
 </section>
 
 <!-- Products Section -->
-<section id="products" class="py-16 px-4 bg-gray-50">
+<section id="products" class="py-16 px-4 bg-white">
 <div class="max-w-7xl mx-auto">
 <h2 class="text-4xl font-bold text-center mb-12">Featured Products</h2>
+<div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Products will be loaded by JavaScript -->
+</div>
+</div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-16 px-4 bg-gray-50">
+<div class="max-w-7xl mx-auto text-center">
+<h2 class="text-4xl font-bold mb-12">Our Services</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
-<!-- Product Card 1 -->
-<div class="product-card rounded-3xl shadow-xl overflow-hidden bg-white">
-<img src="images/617134-1761724465.webp" class="w-full h-52 object-cover" />
-<div class="p-5">
-<h3 class="font-bold text-lg mb-2">Axis-Y Dark Spot Correcting Glow Serum 50Ml</h3>
-<p class="text-sm opacity-75 mb-3">Correct Dark Spots</p>
-<div class="flex justify-between items-center">
-<span class="text-2xl font-bold text-blue-600">940 EGP</span>
-<button onclick="addToCart(event,'Axis-Y Dark Spot Serum',940)" class="px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md btn-hover">Add to Cart</button>
+<div class="service-card p-6 rounded-3xl shadow-xl bg-white flex flex-col items-center">
+<div class="service-icon">🚚</div>
+<h3 class="mt-4 font-bold text-lg">Home Delivery</h3>
+<p class="text-sm opacity-75 mt-2">Fast delivery to your doorstep</p>
 </div>
+<div class="service-card p-6 rounded-3xl shadow-xl bg-white flex flex-col items-center">
+<div class="service-icon">💊</div>
+<h3 class="mt-4 font-bold text-lg">Prescription Filling</h3>
+<p class="text-sm opacity-75 mt-2">Quick and accurate service</p>
 </div>
+<div class="service-card p-6 rounded-3xl shadow-xl bg-white flex flex-col items-center">
+<div class="service-icon">🩺</div>
+<h3 class="mt-4 font-bold text-lg">Health Consultation</h3>
+<p class="text-sm opacity-75 mt-2">Expert advice from pharmacists</p>
 </div>
-
-<!-- Product Card 2 -->
-<div class="product-card rounded-3xl shadow-xl overflow-hidden bg-white relative">
-<div class="offer-badge">50% OFF</div>
-<img src="images/617149-1761724434.webp" class="w-full h-52 object-cover" />
-<div class="p-5">
-<h3 class="font-bold text-lg mb-2">Anua Niacinamide 10% + Txa 4% Dark Spot Serum 30Ml</h3>
-<p class="text-sm opacity-75 mb-3">Deep hydration formula</p>
-<div class="flex justify-between items-center">
-<span class="text-2xl font-bold text-blue-600">1,480 EGP</span>
-<button onclick="addToCart(event,'Anua Niacinamide Serum',1480)" class="px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md btn-hover">Add to Cart</button>
+<div class="service-card p-6 rounded-3xl shadow-xl bg-white flex flex-col items-center">
+<div class="service-icon">❤️</div>
+<h3 class="mt-4 font-bold text-lg">Wellness Programs</h3>
+<p class="text-sm opacity-75 mt-2">Personalized health plans</p>
 </div>
-</div>
-</div>
-
-<!-- Product Card 3 -->
-<div class="product-card rounded-3xl shadow-xl overflow-hidden bg-white">
-<img src="images/617534.webp" class="w-full h-52 object-cover" />
-<div class="p-5">
-<h3 class="font-bold text-lg mb-2">Axis-Y Vegan Collagen Eye Serum 10Ml</h3>
-<p class="text-sm opacity-75 mb-3">Collagen Eye Serum</p>
-<div class="flex justify-between items-center">
-<span class="text-2xl font-bold text-blue-600">1,080 EGP</span>
-<button onclick="addToCart(event,'Axis-Y Collagen Eye Serum',1080)" class="px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md btn-hover">Add to Cart</button>
-</div>
-</div>
-</div>
-
-<!-- Product Card 4 -->
-<div class="product-card rounded-3xl shadow-xl overflow-hidden bg-white relative">
-<div class="offer-badge">50% OFF</div>
-<img src="images/404264.webp" class="w-full h-52 object-cover" />
-<div class="p-5">
-<h3 class="font-bold text-lg mb-2">Tussistop 60 Mg 20 Tab</h3>
-<div class="flex justify-between items-center">
-<span class="text-2xl font-bold text-blue-600">60 EGP</span>
-<button onclick="addToCart(event,'Tussistop 60mg',60)" class="px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md btn-hover">Add to Cart</button>
-</div>
-</div>
-</div>
-
-<!-- Add Product Cards 5-8 similarly -->
-
 </div>
 </div>
 </section>
 
-<!-- Cart Section -->
-<section id="cart" class="py-16 px-4 bg-white fixed top-0 right-0 w-full md:w-96 h-full shadow-lg overflow-y-auto hidden transition-transform transform translate-x-full z-50 bg-gray-50">
-<div class="p-6">
-<h2 class="text-4xl font-bold text-center mb-8">Your Cart 🛒</h2>
-<div id="cartItems" class="space-y-4"></div>
-<div class="text-right mt-6">
-<h3 class="text-2xl font-bold">Total: <span id="cartTotal">0</span> EGP</h3>
-<button onclick="goToCheckout()" class="mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full font-bold btn-hover w-full">Proceed to Checkout</button>
+<!-- Reviews Section -->
+<section id="reviews" class="py-16 px-4 bg-white">
+<div class="max-w-7xl mx-auto text-center">
+<h2 class="text-4xl font-bold mb-12">What Our Customers Say</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="p-6 bg-gray-50 rounded-3xl shadow-xl">
+<p class="mb-4 font-medium">"Great service and fast delivery!"</p>
+<h3 class="font-bold">Ahmed M.</h3>
+<p class="text-sm opacity-75">Cairo, Egypt</p>
+</div>
+<div class="p-6 bg-gray-50 rounded-3xl shadow-xl">
+<p class="mb-4 font-medium">"Wide range of products and amazing discounts."</p>
+<h3 class="font-bold">Sara H.</h3>
+<p class="text-sm opacity-75">Alexandria, Egypt</p>
+</div>
+<div class="p-6 bg-gray-50 rounded-3xl shadow-xl">
+<p class="mb-4 font-medium">"Friendly staff and helpful consultations."</p>
+<h3 class="font-bold">Mohamed T.</h3>
+<p class="text-sm opacity-75">Giza, Egypt</p>
+</div>
 </div>
 </div>
 </section>
 
-<!-- Checkout Section -->
-<section id="checkout" class="py-16 px-4 bg-gray-50 hidden">
-<div class="max-w-2xl mx-auto">
-<h2 class="text-4xl font-bold text-center mb-12">Checkout 💳</h2>
-<form id="checkoutForm" class="bg-white rounded-3xl shadow-xl p-8 grid grid-cols-1 gap-6">
-<input type="text" placeholder="Full Name" required class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-<input type="email" placeholder="Email Address" required class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-<input type="tel" placeholder="Phone Number" required class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-<h3 class="text-2xl font-bold">Payment Details 💳</h3>
-<input type="text" placeholder="Card Number" required class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-<div class="grid grid-cols-2 gap-4">
-<input type="text" placeholder="Expiry MM/YY" required class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-<input type="text" placeholder="CVV" required class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+<!-- FAQ Section -->
+<section id="faq" class="py-16 px-4 bg-gray-50">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+<div class="space-y-4 max-w-3xl mx-auto">
+<div class="border rounded-xl p-4 cursor-pointer bg-white faq-item">
+<h3 class="font-bold text-lg">How long does delivery take?</h3>
+<p class="mt-2 text-sm opacity-75 hidden">Delivery usually takes 2-3 business days.</p>
 </div>
-<button type="submit" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 px-8 rounded-full shadow-lg btn-hover w-full md:w-auto mx-auto">Pay Now</button>
+<div class="border rounded-xl p-4 cursor-pointer bg-white faq-item">
+<h3 class="font-bold text-lg">Do you offer home delivery?</h3>
+<p class="mt-2 text-sm opacity-75 hidden">Yes! We deliver to your doorstep within 24 hours.</p>
+</div>
+<div class="border rounded-xl p-4 cursor-pointer bg-white faq-item">
+<h3 class="font-bold text-lg">What payment methods are accepted?</h3>
+<p class="mt-2 text-sm opacity-75 hidden">Credit/Debit cards, mobile payments, and cash on delivery.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Newsletter Section -->
+<section id="newsletter" class="py-16 px-4 bg-white">
+<div class="max-w-2xl mx-auto text-center">
+<h2 class="text-3xl font-bold mb-4">Subscribe for Offers &amp; Updates</h2>
+<p class="mb-6 opacity-75">Get latest promotions and health tips delivered to your inbox</p>
+<form class="flex flex-col sm:flex-row gap-4" onsubmit="handleNewsletterSubmit(event)">
+<input type="email" placeholder="Enter your email" required class="border border-gray-300 rounded-full p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition flex-1">
+<button type="submit" class="px-6 py-3 rounded-full bg-blue-500 text-white font-bold btn-hover">Subscribe</button>
 </form>
 </div>
 </section>
 
-<!-- Toast -->
-<div id="toast"></div>
-
 <!-- Footer -->
 <footer id="footer" class="py-12 px-4 bg-gray-800 text-gray-200">
-<div class="max-w-7xl mx-auto text-center opacity-75">© 2024 Gessraha Pharmacy. All rights reserved.</div>
+<div class="max-w-7xl mx-auto text-center opacity-75 space-y-4">
+<p>&copy; 2025 Gessraha Pharmacy. All rights reserved.</p>
+<p>Address: ELMahata Main St, TANTA, Egypt</p>
+<p>Email: info@gessraha.com | Phone: +20 100 000 0000</p>
+
+</div>
 </footer>
 
+<!-- Cart Sidebar -->
+<div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto transform translate-x-full transition-transform duration-300">
+<div class="p-6">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold">Shopping Cart</h2>
+<button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+</div>
+<div id="cart-items" class="space-y-4 mb-6">
+<!-- Cart items will be loaded here -->
+</div>
+<div id="cart-empty" class="text-center opacity-75 py-8">Your cart is empty</div>
+<div id="cart-summary" class="border-t pt-4 hidden">
+<div class="flex justify-between mb-4">
+<span class="text-lg font-semibold">Total:</span>
+<span id="cart-total" class="text-2xl font-bold text-blue-600">0 EGP</span>
+</div>
+<button onclick="openCheckout()" class="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-bold btn-hover">Proceed to Checkout</button>
+</div>
+</div>
+</div>
+
+<!-- Cart Overlay -->
+<div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleCart()"></div>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="fixed inset-0 flex items-center justify-center z-50 p-4 hidden">
+<div class="fixed inset-0 bg-black bg-opacity-50" onclick="closeCheckout()"></div>
+<div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative z-10">
+<div class="p-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-3xl font-bold">Checkout</h2>
+<button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+</div>
+<form onsubmit="handleCheckout(event)" class="space-y-4">
+<div>
+<label class="block mb-2 font-semibold">Full Name</label>
+<input type="text" required class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+<div>
+<label class="block mb-2 font-semibold">Phone Number</label>
+<input type="tel" required class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+<div>
+<label class="block mb-2 font-semibold">Email</label>
+<input type="email" required class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+<div>
+<label class="block mb-2 font-semibold">Delivery Address</label>
+<textarea required rows="3" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+</div>
+<div>
+<label class="block mb-2 font-semibold">Payment Method</label>
+<select required class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+<option value="">Select payment method</option>
+<option value="cash">Cash on Delivery</option>
+<option value="card">Credit/Debit Card</option>
+<option value="mobile">Mobile Payment</option>
+</select>
+</div>
+<div class="border-t pt-4 mt-4">
+<div class="flex justify-between mb-4">
+<span class="text-lg font-semibold">Total Amount:</span>
+<span id="checkout-total" class="text-2xl font-bold text-blue-600">0 EGP</span>
+</div>
+<button type="submit" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-bold btn-hover">Place Order</button>
+</div>
+
+<div id="card-details" class="hidden">
+  <div class="mt-4">
+    <label class="block mb-2 font-semibold">Card Number</label>
+    <input type="text" placeholder="1234 5678 9012 3456" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+  </div>
+  <div class="mt-4 flex gap-4">
+    <div class="flex-1">
+      <label class="block mb-2 font-semibold">Expiry Date</label>
+      <input type="text" placeholder="MM/YY" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <div class="flex-1">
+      <label class="block mb-2 font-semibold">CVV</label>
+      <input type="text" placeholder="123" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+  </div>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast"></div>
+
 <script>
-const cart = [];
-function showToast(message){
+// Products Data
+const products = [
+  // Skincare
+  { id: 1, name: 'Axis-Y Dark Spot Correcting Glow Serum 50Ml', description: 'Correct Dark Spots', price: 940, image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&h=500&fit=crop', category: 'Skincare' },
+  { id: 2, name: 'CeraVe Hydrating Facial Cleanser', description: 'Gentle cleanser for normal to dry skin', price: 450, image: 'images/download (1).webp', category: 'Skincare' },
+  { id: 3, name: 'La Roche-Posay Anthelios Sunscreen SPF 50', description: 'High protection sunscreen', price: 680, image: 'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=500&h=500&fit=crop', category: 'Skincare' },
+  { id: 4, name: 'Neutrogena Hydro Boost Water Gel', description: 'Hydrating gel moisturizer', price: 520, image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&h=500&fit=crop', category: 'Skincare' },
+  { id: 5, name: 'The Ordinary Niacinamide 10% + Zinc 1%', description: 'Reduces appearance of blemishes', price: 380, image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500&h=500&fit=crop', category: 'Skincare' },
+  { id: 6, name: 'Vichy Mineral 89 Hyaluronic Acid', description: 'Daily skin booster', price: 750, image: 'https://images.unsplash.com/photo-1617897903246-719242758050?w=500&h=500&fit=crop', category: 'Skincare' },
+  // Medicines
+  { id: 7, name: 'Panadol Extra', description: 'Pain relief tablets', price: 45, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop', category: 'Medicines' },
+  { id: 8, name: 'Augmentin 1g', description: 'Antibiotic tablets', price: 120, image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&h=500&fit=crop', category: 'Medicines' },
+  { id: 9, name: 'Omeprazole 20mg', description: 'Acid reflux treatment', price: 85, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&h=500&fit=crop', category: 'Medicines' },
+  { id: 10, name: 'Ventolin Inhaler', description: 'Asthma relief inhaler', price: 95, image: 'https://images.unsplash.com/photo-1587854680352-936b22b91030?w=500&h=500&fit=crop', category: 'Medicines' },
+  { id: 11, name: 'Brufen 600mg', description: 'Anti-inflammatory tablets', price: 55, image: 'images/download (1).jpg', category: 'Medicines' },
+  { id: 12, name: 'Telfast 180mg', description: 'Allergy relief tablets', price: 110, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&h=500&fit=crop', category: 'Medicines' },
+  // Supplements
+  { id: 13, name: 'Omega-3 Fish Oil 1000mg', description: 'Heart and brain health support', price: 280, image: 'https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?w=500&h=500&fit=crop', category: 'Supplements' },
+  { id: 14, name: 'Vitamin D3 5000 IU', description: 'Bone and immune health', price: 195, image: 'https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=500&h=500&fit=crop', category: 'Supplements' },
+  { id: 15, name: 'Multivitamin Complex', description: 'Complete daily nutrition', price: 350, image: 'images/download (2).jpg', category: 'Supplements' },
+  { id: 16, name: 'Calcium + Vitamin D', description: 'Strong bones and teeth', price: 240, image: 'images/download (3).jpg', category: 'Supplements' },
+  { id: 17, name: 'Zinc 50mg', description: 'Immune system booster', price: 180, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop', category: 'Supplements' },
+  { id: 18, name: 'Probiotics Complex', description: 'Digestive health support', price: 420, image: 'images/download (4).jpg', category: 'Supplements' }
+];
+
+let cart = [];
+let currentCategory = 'all';
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  renderProducts();
+  setupSearch();
+  setupFAQ();
+});
+
+// Render Products
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+  
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery) || product.description.toLowerCase().includes(searchQuery);
+    return matchesCategory && matchesSearch;
+  });
+
+  grid.innerHTML = filteredProducts.map(product => `
+    <div class="product-card rounded-3xl shadow-xl overflow-hidden bg-white" data-category="${product.category}">
+      <img src="${product.image}" class="w-full h-52 object-cover" alt="${product.name}" />
+      <div class="p-5">
+        <h3 class="font-bold text-lg mb-2">${product.name}</h3>
+        <p class="text-sm opacity-75 mb-3">${product.description}</p>
+        <div class="flex justify-between items-center">
+          <span class="text-2xl font-bold text-blue-600">${product.price} EGP</span>
+          <button onclick="addToCart(${product.id})" class="px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md btn-hover">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Filter Category
+function filterCategory(category) {
+  currentCategory = category;
+  renderProducts();
+  
+  // Update button styles
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.className = 'category-btn px-6 py-3 rounded-full bg-blue-500 text-white font-semibold btn-hover';
+  });
+  event.target.className = 'category-btn px-6 py-3 rounded-full bg-blue-600 text-white font-semibold btn-hover shadow-lg scale-105';
+}
+
+// Search
+function setupSearch() {
+  document.getElementById('searchInput').addEventListener('input', renderProducts);
+}
+
+// Add to Cart
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  const existingItem = cart.find(item => item.id === productId);
+  
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    cart.push({ ...product, quantity: 1 });
+  }
+  
+  updateCart();
+  showToast(`تم إضافة ${product.name} إلى السلة`);
+}
+
+// Update Cart
+function updateCart() {
+  const cartCount = document.getElementById('cart-count');
+  const cartItems = document.getElementById('cart-items');
+  const cartEmpty = document.getElementById('cart-empty');
+  const cartSummary = document.getElementById('cart-summary');
+  const cartTotal = document.getElementById('cart-total');
+  
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  if (totalItems > 0) {
+    cartCount.textContent = totalItems;
+    cartCount.classList.remove('hidden');
+  } else {
+    cartCount.classList.add('hidden');
+  }
+  
+  if (cart.length === 0) {
+    cartEmpty.classList.remove('hidden');
+    cartSummary.classList.add('hidden');
+    cartItems.innerHTML = '';
+  } else {
+    cartEmpty.classList.add('hidden');
+    cartSummary.classList.remove('hidden');
+    
+    cartItems.innerHTML = cart.map(item => `
+      <div class="flex gap-4 border-b pb-4">
+        <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg" />
+        <div class="flex-1">
+          <h3 class="text-sm font-semibold mb-1">${item.name}</h3>
+          <p class="text-blue-600 font-bold mb-2">${item.price} EGP</p>
+          <div class="flex items-center gap-2">
+            <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 font-bold">-</button>
+            <span class="px-3 font-semibold">${item.quantity}</span>
+            <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 font-bold">+</button>
+            <button onclick="removeFromCart(${item.id})" class="ml-auto text-red-500 hover:text-red-700 text-sm font-semibold">Remove</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    cartTotal.textContent = `${totalPrice} EGP`;
+  }
+}
+
+// Update Quantity
+function updateQuantity(productId, newQuantity) {
+  if (newQuantity <= 0) {
+    removeFromCart(productId);
+  } else {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+      item.quantity = newQuantity;
+      updateCart();
+    }
+  }
+}
+
+// Remove from Cart
+function removeFromCart(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  updateCart();
+  showToast('تم حذف المنتج من السلة');
+}
+
+// Toggle Cart
+function toggleCart() {
+  const sidebar = document.getElementById('cart-sidebar');
+  const overlay = document.getElementById('cart-overlay');
+  
+  if (sidebar.classList.contains('translate-x-full')) {
+    sidebar.classList.remove('translate-x-full');
+    overlay.classList.remove('hidden');
+  } else {
+    sidebar.classList.add('translate-x-full');
+    overlay.classList.add('hidden');
+  }
+}
+
+// Open Checkout
+function openCheckout() {
+  toggleCart();
+  const modal = document.getElementById('checkout-modal');
+  const checkoutTotal = document.getElementById('checkout-total');
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  checkoutTotal.textContent = `${totalPrice} EGP`;
+  modal.classList.remove('hidden');
+}
+
+// Close Checkout
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.add('hidden');
+}
+
+// Handle Checkout
+function handleCheckout(event) {
+  event.preventDefault();
+  showToast('تم تأكيد طلبك بنجاح! سيتم التواصل معك قريباً');
+  cart = [];
+  updateCart();
+  closeCheckout();
+  event.target.reset();
+}
+
+// Show Toast
+function showToast(message) {
   const toast = document.getElementById('toast');
   toast.textContent = message;
   toast.classList.add('show');
-  setTimeout(()=>{toast.classList.remove('show');}, 2500);
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
-function addToCart(event, name, price) {
-  event.stopPropagation();
-  cart.push({name, price});
-  updateCartUI();
-  showToast(name + ' added to cart!');
-}
-function updateCartUI() {
-  const cartCount = document.getElementById('cart-count');
-  cartCount.textContent = cart.length;
-  const cartItems = document.getElementById('cartItems');
-  const cartTotal = document.getElementById('cartTotal');
-  cartItems.innerHTML = '';
-  let total = 0;
-  cart.forEach((item, index) => {
-    total += item.price;
-    cartItems.innerHTML += `
-      <div class="flex justify-between items-center border p-4 rounded-xl shadow-sm bg-gray-50">
-        <span>${item.name}</span>
-        <div class="flex items-center space-x-3">
-          <span>${item.price} EGP</span>
-          <button onclick="removeFromCart(${index})" class="text-red-500 font-bold hover:opacity-80">❌</button>
-        </div>
-      </div>
-    `;
-  });
-  cartTotal.textContent = total;
-}
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  updateCartUI();
-}
-function toggleCart() {
-  const cartSection = document.getElementById('cart');
-  cartSection.classList.toggle('hidden');
-  cartSection.classList.toggle('translate-x-full');
-}
-function goToCheckout() {
-  document.getElementById('cart').classList.add('hidden');
-  document.getElementById('checkout').classList.remove('hidden');
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+
+// Scroll to Products
 function scrollToProducts() {
-  document.getElementById('products').scrollIntoView({behavior:'smooth'});
+  document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
-document.getElementById('searchInput').addEventListener('input', function() {
-  const value = this.value.toLowerCase();
-  const products = document.querySelectorAll('#products .product-card');
-  products.forEach(product => {
-    const name = product.querySelector('h3').textContent.toLowerCase();
-    product.style.display = name.includes(value) ? 'block' : 'none';
+
+// FAQ Toggle
+function setupFAQ() {
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const p = item.querySelector('p');
+      p.classList.toggle('hidden');
+    });
   });
-});
-document.getElementById('checkoutForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  showToast('Payment Successful! Thank you for your purchase.');
-  cart.length = 0;
-  updateCartUI();
-  this.reset();
-  document.getElementById('checkout').classList.add('hidden');
-});
-function showProductDetails(id){
-  showToast('Product details coming soon: ' + id);
 }
+
+// Newsletter Submit
+function handleNewsletterSubmit(event) {
+  event.preventDefault();
+  showToast('Thank you for subscribing!');
+  event.target.reset();
+}
+
+// Show/hide card fields based on payment method
+const paymentSelect = document.querySelector('#checkout-modal select');
+const cardDetails = document.getElementById('card-details');
+
+paymentSelect.addEventListener('change', () => {
+  if (paymentSelect.value === 'card') {
+    cardDetails.classList.remove('hidden');
+  } else {
+    cardDetails.classList.add('hidden');
+  }
+});
+
 </script>
 
 </body>
